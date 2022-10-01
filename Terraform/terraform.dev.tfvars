@@ -1,4 +1,4 @@
-lambda_bucket = "bucket-for-states"
-input_bucket_name = "vidstream-input-videos"
+lambda_bucket = "img2txt-images"
+input_bucket_name = "img2txt-images"
 region = "ap-south-1"
 # profile = "default"

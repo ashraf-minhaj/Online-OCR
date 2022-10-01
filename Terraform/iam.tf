@@ -46,7 +46,7 @@ resource "aws_iam_policy" "policy" {
     {
       "Effect": "Allow",
       "Action": [
-        "mediaconvert:*"
+        "rekognition:*"
       ],
       "Resource": "*"
     }

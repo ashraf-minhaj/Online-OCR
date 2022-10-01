@@ -1,3 +1,4 @@
+# create a bucket notification for lambda to be invoked by
 resource "aws_s3_bucket_notification" "bucket_notification" {
   bucket = "${var.input_bucket_name}"
 
