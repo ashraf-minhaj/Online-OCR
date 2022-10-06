@@ -165,7 +165,7 @@ workflows:
           filters:
             branches:
               only:
-                  - dev/cicd-integration
+                  - dev/*
 
       # - aws-cli-cred-setup
 
