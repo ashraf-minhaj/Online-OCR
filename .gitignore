@@ -3,3 +3,4 @@
 *.hcl
 *.0_x5
 *.tfstate
+*.pyc
