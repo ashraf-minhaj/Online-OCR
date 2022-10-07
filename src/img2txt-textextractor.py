@@ -52,16 +52,19 @@ def handler(event, context):
     # logger.info('Detected text\n----------')
 
     logger.info(textDetections)
+    if textDetections:
+        logger.info("Text Found")
+        texts = ''
 
-    for text in textDetections:
-            # print ('Detected text:' + text['DetectedText'])
-            texts +=  text['DetectedText'] + ' '
-            # print ('Confidence: ' + "{:.2f}".format(text['Confidence']) + "%")
-            # print ('Id: {}'.format(text['Id']))
-            # if 'ParentId' in text:
-            #     print ('Parent Id: {}'.format(text['ParentId']))
-            # print ('Type:' + text['Type'])
-            # print()
+        for text in textDetections:
+                # print ('Detected text:' + text['DetectedText'])
+                texts +=  text['DetectedText'] + ' '
+                # print ('Confidence: ' + "{:.2f}".format(text['Confidence']) + "%")
+                # print ('Id: {}'.format(text['Id']))
+                # if 'ParentId' in text:
+                #     print ('Parent Id: {}'.format(text['ParentId']))
+                # print ('Type:' + text['Type'])
+                # print()
 
     logger.info("Detected text: ")
     logger.info(texts)
