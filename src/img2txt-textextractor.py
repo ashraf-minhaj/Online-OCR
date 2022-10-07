@@ -15,6 +15,10 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def handler(event, context):
+
+    texts = 'unable to find anything'
+    stat = 422
+
     # log event
     logger.info(event)
 
@@ -45,17 +49,22 @@ def handler(event, context):
         )
                         
     textDetections = response['TextDetections']
-    print ('Detected text\n----------')
+    logger.info('Detected text\n----------')
+
     for text in textDetections:
             print ('Detected text:' + text['DetectedText'])
-            print ('Confidence: ' + "{:.2f}".format(text['Confidence']) + "%")
-            print ('Id: {}'.format(text['Id']))
-            if 'ParentId' in text:
-                print ('Parent Id: {}'.format(text['ParentId']))
-            print ('Type:' + text['Type'])
-            print()
+            texts +=  text['DetectedText'] + ' '
+            # print ('Confidence: ' + "{:.2f}".format(text['Confidence']) + "%")
+            # print ('Id: {}'.format(text['Id']))
+            # if 'ParentId' in text:
+            #     print ('Parent Id: {}'.format(text['ParentId']))
+            # print ('Type:' + text['Type'])
+            # print()
+
+    logger.info("Detected text: ")
+    logger.info(texts)
 
     return {
-        'statusCode': 200,
-        'body': json.dumps('Hello everything worked fine')
+        'statusCode': stat,
+        'body': json.dumps(texts)
     }
