@@ -7,6 +7,7 @@ orbs:
 jobs:
   build-n-test: 
     #  will use a python 3.10.2 container
+    executor: aws-cli/default
     docker:
       - image: cimg/python:3.10.2
     working_directory: ~/project
@@ -18,6 +19,11 @@ jobs:
     # CircleCI will report the results back to your VCS provider.
     steps:
       - checkout
+
+      - aws-cli/setup:
+          aws-access-key-id: aws_access_key_id
+          aws-secret-access-key: aws_secret_access_key
+          aws-region: region
 
       - run:
           name: get current dir
