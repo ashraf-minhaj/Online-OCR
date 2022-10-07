@@ -34,7 +34,7 @@ jobs:
           command: python --version
 
       - run:
-          name: list of things in terraform directory
+          name: list of things in Terraform directory
           command: cd Terraform; ls -a
 
       - python/install-packages:
