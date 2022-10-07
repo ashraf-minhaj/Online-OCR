@@ -10,10 +10,9 @@ This is an event driven component. An s3PutObject triggers the AWS Lambda that u
 * handle no text case - `done`
 * test script in ci   - `done`
 
-
 Find current version of a python library - `pip3 freeze | grep lib_name`
 
-##### Ashraf Minhaj
+##### Ⓒ Ashraf Minhaj
 ##### Find me on LinkedIn [Ashraf-Minhaj](https://www.linkedin.com/in/ashraf-minhaj/)
 
 #### Learn By Making.
