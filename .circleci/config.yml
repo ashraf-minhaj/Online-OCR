@@ -5,8 +5,9 @@ orbs:
   aws-cli: circleci/aws-cli@3.1.3
 
 jobs:
-  build: 
+  build-n-test: 
     #  will use a python 3.10.2 container
+    executor: aws-cli/default
     docker:
       - image: cimg/python:3.10.2
     working_directory: ~/project
@@ -18,25 +19,32 @@ jobs:
     # CircleCI will report the results back to your VCS provider.
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          app-dir: ~/project/src/  # If you're requirements.txt isn't in the root directory.
-          pip-dependency-file: requirements.txt  # if you have a different name for your requirements file, maybe one that combines your runtime and test requirements.
-      # - run:
-      #     name: Run tests
-      #     # This assumes pytest is installed via the install-package step above
-      #     command: pytest
-      - run:
-          name: Check pyton version
-          command: python --version
-          
+
+      - aws-cli/setup:
+          aws-access-key-id: aws_access_key_id
+          aws-secret-access-key: aws_secret_access_key
+          aws-region: region
+
       - run:
           name: get current dir
           command: pwd
 
       - run:
-          name: list of things in terraform directory
+          name: Check pyton version
+          command: python --version
+
+      - run:
+          name: list of things in Terraform directory
           command: cd Terraform; ls -a
+
+      - python/install-packages:
+          pkg-manager: pip
+          app-dir: ~/project/src/                # If you're requirements.txt isn't in the root directory.
+          pip-dependency-file: requirements.txt  # if you have a different name for your requirements file, maybe one that combines your runtime and test requirements.
+      
+      - run:
+          name: Run tests                        # This assumes pytest is installed via the install-package step above
+          command: cd src; pytest
 
   # aws-cli-cred-setup:
   #   executor: aws-cli/default
@@ -161,22 +169,22 @@ workflows:
   dev_workflow:
     # development branch workflow
     jobs:
-      - build:
+      - build-n-test:
           filters:
             branches:
               only:
-                  - dev/cicd-integration
+                  - dev/test-script
 
       # - aws-cli-cred-setup
 
       - plan:
           requires:
-            - build
+            - build-n-test
 
   stage_workflow: 
     # staging branch workflow
     jobs:
-      - build:
+      - build-n-test:
           filters:
             branches:
               only:
@@ -184,7 +192,7 @@ workflows:
       
       - plan:
           requires:
-            - build
+            - build-n-test
 
       - hold:
           name: Apply-Approval
