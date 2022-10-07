@@ -49,10 +49,12 @@ def handler(event, context):
         )
                         
     textDetections = response['TextDetections']
-    logger.info('Detected text\n----------')
+    # logger.info('Detected text\n----------')
+
+    logger.info(textDetections)
 
     for text in textDetections:
-            print ('Detected text:' + text['DetectedText'])
+            # print ('Detected text:' + text['DetectedText'])
             texts +=  text['DetectedText'] + ' '
             # print ('Confidence: ' + "{:.2f}".format(text['Confidence']) + "%")
             # print ('Id: {}'.format(text['Id']))
