@@ -100,13 +100,13 @@ jobs:
           name: get aws acc info
           command: aws sts get-caller-identity
       
-      - run:
-          name: Init infrastructure
-          command: sh scripts/init.sh dev
+      - tf-command:
+          environment: dev
+          script: init
 
-      - run:
-          name: Plan infrastructure
-          command: sh scripts/plan.sh dev
+      - tf-command:
+          environment: dev
+          script: plan
 
       - run:
           name: list of things after plan
@@ -210,7 +210,7 @@ workflows:
           filters:
             branches:
               only:
-                  - dev/test-script
+                  - dev/cicd-element-params
 
       # - aws-cli-cred-setup
 
@@ -251,11 +251,11 @@ workflows:
           requires:
             - Destroy-Approval
 
-  param_workflow: 
-    # staging branch workflow
-    jobs:
-      - init-param:
-          filters:
-            branches:
-              only:
-                  - dev/cicd-element-params
+  # param_workflow: 
+  #   # staging branch workflow
+  #   jobs:
+  #     - init-param:
+  #         filters:
+  #           branches:
+  #             only:
+  #                 - dev/cicd-element-params
