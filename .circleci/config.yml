@@ -222,9 +222,9 @@ workflows:
       # - aws-cli-cred-setup
 
       - plan:
-          environment: dev
           requires:
             - build-n-test
+          environment: dev
 
   stage_workflow: 
     # staging branch workflow
