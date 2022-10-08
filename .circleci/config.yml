@@ -1,7 +1,9 @@
 version: 2.1
 
+# this uses component parameters
+# just like using variables. 
 commands:
-  tf-init:
+  tf-command:
     parameters:
       environment:
         type: string
@@ -193,8 +195,8 @@ jobs:
           aws-secret-access-key: aws_secret_access_key
           aws-region: region
 
-      - tf-init:
-          environment: dev
+      - tf-command:
+          environment: stage
           script: init
     
 
