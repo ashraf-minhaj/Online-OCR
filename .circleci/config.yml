@@ -4,6 +4,7 @@ commands:
   tf-init:
     parameters:
       environment:
+        default: dev
         type: string
     steps:
       - run: sh scripts/init.sh << parameters.message >>
