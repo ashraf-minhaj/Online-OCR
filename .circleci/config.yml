@@ -7,7 +7,7 @@ commands:
         default: dev
         type: string
     steps:
-      - run: sh scripts/init.sh << parameters.message >>
+      - run: sh scripts/init.sh << parameters.environment >>
 
 orbs:
   python: circleci/python@1.5.0
