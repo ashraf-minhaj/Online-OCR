@@ -84,13 +84,13 @@ jobs:
   #           - .
 
   plan:
+    parameters:
+      environment: 
+        type: string
     executor: aws-cli/default
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     working_directory: ~/project
-    parameters:
-      environment: 
-        type: string
     steps:
       - checkout
 
@@ -222,8 +222,7 @@ workflows:
       # - aws-cli-cred-setup
 
       - plan:
-          environment: 
-            - dev
+          environment: dev
           requires:
             - build-n-test
 
