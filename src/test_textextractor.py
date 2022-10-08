@@ -85,12 +85,12 @@ event_with_no_txt = {
 ]}
 
 
-def test_no_text():
+def test_detected_text():
     response = img2txt.handler(event=event_with_txt, context='')
     assert response["body"] == '"Detect Me If You Can. Detect Me If You Can. "'
     # print(response)
 
-def test_detected_text():
+def test_no_text():
     response = img2txt.handler(event=event_with_no_txt, context='')
     assert response["body"] == '"unable to find anything"'
     # print(response)
