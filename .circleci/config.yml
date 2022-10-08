@@ -87,6 +87,7 @@ jobs:
     parameters:
       environment: 
         type: string
+        default: dev
     executor: aws-cli/default
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -222,7 +223,7 @@ workflows:
       # - aws-cli-cred-setup
 
       - plan:
-        environment: dev
+          environment: dev
           # requires:
           #   - build-n-test
           
