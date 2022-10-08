@@ -223,8 +223,8 @@ workflows:
 
       - plan:
           environment: dev
-            requires:
-              - build-n-test
+          requires:
+            - build-n-test
           
 
   stage_workflow: 
