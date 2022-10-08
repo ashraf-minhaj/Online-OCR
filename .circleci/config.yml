@@ -1,18 +1,5 @@
 version: 2.1
 
-# # this uses component parameters
-# # just like using variables. 
-# commands:
-#   tf-command:
-#     parameters:
-#       environment:
-#         type: string
-#       script:
-#         type: string
-#     steps:
-#       - run: sh scripts/<< parameters.script >>.sh << parameters.environment >>
-
-
 orbs:
   python: circleci/python@1.5.0
   aws-cli: circleci/aws-cli@3.1.3
@@ -59,35 +46,15 @@ jobs:
           name: Run tests                        # This assumes pytest is installed via the install-package step above
           command: cd src; pytest
 
-  # aws-cli-cred-setup:
-  #   executor: aws-cli/default
-  #   working_directory: ~/project
-  #   steps:
-  #     - checkout
-      
-  #     - run:
-  #         name: list of things in that
-  #         command: ls -a
-
-  #     - aws-cli/setup:
-  #         aws-access-key-id: aws_access_key_id
-  #         aws-secret-access-key: aws_secret_access_key
-  #         aws-region: region
-      
-  #     - run:
-  #         name: get aws acc info
-  #         command: aws sts get-caller-identity
-
-  #     - persist_to_workspace:
-  #         root: .
-  #         paths: 
-  #           - .
-
   plan:
     parameters:
       environment: 
         type: string
         default: dev
+      tf-script:
+        type: string
+        default: init
+    
     executor: aws-cli/default
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -103,14 +70,10 @@ jobs:
       - run:
           name: get aws acc info
           command: aws sts get-caller-identity
-      
-      # - tf-command:
-      #     environment: dev
-      #     script: init
 
       - run:
           name: init infrastructure
-          command: sh scripts/init.sh << parameters.environment >>
+          command: sh scripts/<< parameters.tf-script >>.sh << parameters.environment >>
 
       # - tf-command:
       #     environment: dev
@@ -183,31 +146,6 @@ jobs:
           name: destroy
           command: sh scripts/destroy.sh stage
 
-  # init-param:
-  #   executor: aws-cli/default
-  #   docker:
-  #     - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-  #   working_directory: ~/project
-  #   steps:
-  #     - attach_workspace:
-  #         at: .
-        
-  #     - checkout
-
-  #     - run:
-  #         name: list of things in dir
-  #         command: cd Terraform; ls -a
-
-  #     - aws-cli/setup:
-  #         aws-access-key-id: aws_access_key_id
-  #         aws-secret-access-key: aws_secret_access_key
-  #         aws-region: region
-
-  #     - tf-command:
-  #         environment: stage
-  #         script: init
-    
-
 
 # Invoke jobs via workflows
 workflows:
@@ -224,6 +162,7 @@ workflows:
 
       - plan:
           environment: stage
+          tf-script: init
           requires:
             - build-n-test
           
@@ -260,12 +199,3 @@ workflows:
       - destroy:
           requires:
             - Destroy-Approval
-
-  # param_workflow: 
-  #   # staging branch workflow
-  #   jobs:
-  #     - init-param:
-  #         filters:
-  #           branches:
-  #             only:
-  #                 - dev/cicd-element-params
