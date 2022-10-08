@@ -4,10 +4,12 @@ commands:
   tf-init:
     parameters:
       environment:
-        default: dev
+        type: string
+      script:
         type: string
     steps:
-      - run: sh scripts/init.sh << parameters.environment >>
+      - run: sh scripts/<< parameters.script >>.sh << parameters.environment >>
+
 
 orbs:
   python: circleci/python@1.5.0
@@ -193,6 +195,7 @@ jobs:
 
       - tf-init:
           environment: dev
+          script: init
     
 
 
