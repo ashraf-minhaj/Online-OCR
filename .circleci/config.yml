@@ -51,9 +51,6 @@ jobs:
       environment: 
         type: string
         default: dev
-      tf-script:
-        type: string
-        default: init
     
     executor: aws-cli/default
     docker:
@@ -73,11 +70,11 @@ jobs:
 
       - run:
           name: init infrastructure
-          command: sh scripts/<< parameters.tf-script >>.sh << parameters.environment >>
+          command: sh scripts/init.sh << parameters.environment >>
 
-      # - tf-command:
-      #     environment: dev
-      #     script: plan
+      - run:
+          name: plan infrastructure
+          command: sh scripts/plan.sh << parameters.environment >>
 
       - run:
           name: list of things after plan
@@ -90,6 +87,11 @@ jobs:
             - .                 # Must be relative path from root
 
   apply:
+    parameters:
+      environment: 
+        type: string
+        default: dev
+    
     executor: aws-cli/default
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -114,11 +116,21 @@ jobs:
       #     name: get aws acc info
       #     command: aws sts get-caller-identity
       
+      # - run:
+      #     name: Apply infrastructure
+      #     command: sh scripts/apply.sh dev
+
       - run:
-          name: Apply infrastructure
-          command: sh scripts/apply.sh dev
+          name: plan infrastructure
+          command: sh scripts/apply.sh << parameters.environment >>
+
 
   destroy:
+    parameters:
+      environment: 
+        type: string
+        default: dev
+
     executor: aws-cli/default
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -142,9 +154,13 @@ jobs:
           name: get aws acc info
           command: aws sts get-caller-identity
 
+      # - run:
+      #     name: destroy
+      #     command: sh scripts/destroy.sh stage
+
       - run:
-          name: destroy
-          command: sh scripts/destroy.sh stage
+          name: plan infrastructure
+          command: sh scripts/destroy.sh << parameters.environment >>
 
 
 # Invoke jobs via workflows
@@ -161,8 +177,7 @@ workflows:
       # - aws-cli-cred-setup
 
       - plan:
-          environment: stage
-          tf-script: init
+          environment: dev
           requires:
             - build-n-test
           
@@ -177,6 +192,7 @@ workflows:
                   - stage
       
       - plan:
+          environment: stage
           requires:
             - build-n-test
 
@@ -187,6 +203,7 @@ workflows:
             - plan
 
       - apply:
+          environment: stage
           requires:
             - Apply-Approval
 
@@ -197,5 +214,9 @@ workflows:
             - apply
       
       - destroy:
+          environment: stage
           requires:
             - Destroy-Approval
+
+  
+  # live workflow:
