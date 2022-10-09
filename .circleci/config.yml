@@ -46,31 +46,12 @@ jobs:
           name: Run tests                        # This assumes pytest is installed via the install-package step above
           command: cd src; pytest
 
-  # aws-cli-cred-setup:
-  #   executor: aws-cli/default
-  #   working_directory: ~/project
-  #   steps:
-  #     - checkout
-      
-  #     - run:
-  #         name: list of things in that
-  #         command: ls -a
-
-  #     - aws-cli/setup:
-  #         aws-access-key-id: aws_access_key_id
-  #         aws-secret-access-key: aws_secret_access_key
-  #         aws-region: region
-      
-  #     - run:
-  #         name: get aws acc info
-  #         command: aws sts get-caller-identity
-
-  #     - persist_to_workspace:
-  #         root: .
-  #         paths: 
-  #           - .
-
   plan:
+    parameters:
+      environment: 
+        type: string
+        default: dev
+    
     executor: aws-cli/default
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -86,14 +67,14 @@ jobs:
       - run:
           name: get aws acc info
           command: aws sts get-caller-identity
-      
-      - run:
-          name: Init infrastructure
-          command: sh scripts/init.sh dev
 
       - run:
-          name: Plan infrastructure
-          command: sh scripts/plan.sh dev
+          name: init infrastructure
+          command: sh scripts/init.sh << parameters.environment >>
+
+      - run:
+          name: plan infrastructure
+          command: sh scripts/plan.sh << parameters.environment >>
 
       - run:
           name: list of things after plan
@@ -106,6 +87,11 @@ jobs:
             - .                 # Must be relative path from root
 
   apply:
+    parameters:
+      environment: 
+        type: string
+        default: dev
+    
     executor: aws-cli/default
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -130,11 +116,21 @@ jobs:
       #     name: get aws acc info
       #     command: aws sts get-caller-identity
       
+      # - run:
+      #     name: Apply infrastructure
+      #     command: sh scripts/apply.sh dev
+
       - run:
-          name: Apply infrastructure
-          command: sh scripts/apply.sh dev
+          name: plan infrastructure
+          command: sh scripts/apply.sh << parameters.environment >>
+
 
   destroy:
+    parameters:
+      environment: 
+        type: string
+        default: dev
+
     executor: aws-cli/default
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -158,10 +154,13 @@ jobs:
           name: get aws acc info
           command: aws sts get-caller-identity
 
+      # - run:
+      #     name: destroy
+      #     command: sh scripts/destroy.sh stage
+
       - run:
-          name: destroy
-          command: sh scripts/destroy.sh stage
-    
+          name: plan infrastructure
+          command: sh scripts/destroy.sh << parameters.environment >>
 
 
 # Invoke jobs via workflows
@@ -173,13 +172,15 @@ workflows:
           filters:
             branches:
               only:
-                  - dev/test-script
+                  - dev/cicd-element-params
 
       # - aws-cli-cred-setup
 
       - plan:
+          environment: dev
           requires:
             - build-n-test
+          
 
   stage_workflow: 
     # staging branch workflow
@@ -191,6 +192,7 @@ workflows:
                   - stage
       
       - plan:
+          environment: stage
           requires:
             - build-n-test
 
@@ -201,6 +203,7 @@ workflows:
             - plan
 
       - apply:
+          environment: stage
           requires:
             - Apply-Approval
 
@@ -211,5 +214,9 @@ workflows:
             - apply
       
       - destroy:
+          environment: stage
           requires:
             - Destroy-Approval
+
+  
+  # live workflow:
