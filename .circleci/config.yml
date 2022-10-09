@@ -115,10 +115,6 @@ jobs:
       # - run:
       #     name: get aws acc info
       #     command: aws sts get-caller-identity
-      
-      # - run:
-      #     name: Apply infrastructure
-      #     command: sh scripts/apply.sh dev
 
       - run:
           name: plan infrastructure
@@ -154,10 +150,6 @@ jobs:
           name: get aws acc info
           command: aws sts get-caller-identity
 
-      # - run:
-      #     name: destroy
-      #     command: sh scripts/destroy.sh stage
-
       - run:
           name: plan infrastructure
           command: sh scripts/destroy.sh << parameters.environment >>
@@ -173,8 +165,6 @@ workflows:
             branches:
               only:
                   - dev/cicd-element-params
-
-      # - aws-cli-cred-setup
 
       - plan:
           environment: dev
