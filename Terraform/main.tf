@@ -16,7 +16,7 @@ terraform {
   }
 }
 
-# vidsteam-
+#-
 locals {
   resource_component = "${var.component_prefix}-${var.component_name}"
 }

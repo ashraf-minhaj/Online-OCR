@@ -1,4 +1,3 @@
-lambda_bucket = "img2txt-images"
-input_bucket_name = "img2txt-images"
+bucket_name = "da-boring-website"
 region = "ap-south-1"
 # profile = "default"
