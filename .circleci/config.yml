@@ -158,13 +158,14 @@ jobs:
 # Invoke jobs via workflows
 workflows:
   dev_workflow:
-    # development branch workflow
+    # development and feature branch workflow
     jobs:
       - build-n-test:
           filters:
             branches:
-              only:
-                  - dev/cicd-element-params
+              ignore:
+                  - stage
+                  - main
 
       - plan:
           environment: dev
