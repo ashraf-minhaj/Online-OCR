@@ -3,6 +3,7 @@
  author: asrhaf minhaj
  mail  : ashraf_minhaj@yahoo.com
 
+
 doc: https://docs.aws.amazon.com/rekognition/latest/dg/text-detecting-text-procedure.html 
 """
 
